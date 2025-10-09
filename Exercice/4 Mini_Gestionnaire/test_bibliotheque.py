@@ -1,4 +1,4 @@
-from Mini_Gestionnaire.bibliotheque import Bibliotheque
+"""from Mini_Gestionnaire.bibliotheque import Bibliotheque
 
 
 b = Bibliotheque()
@@ -19,3 +19,4 @@ b2.charger_json("catalogue.json")
 b2.afficher_catalogue()
 
 b2.exporter_csv("catalogue.csv")
+"""

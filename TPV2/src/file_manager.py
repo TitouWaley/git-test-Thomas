@@ -1,8 +1,8 @@
 import json
 import csv
-from models import Livre, LivreNumerique, Bibliotheque
-from exceptions import (
-    ErreurBibliotheque,
+from pathlib import Path
+from src.models import Livre, LivreNumerique, Bibliotheque
+from src.exceptions import (
     ErreurFichierBibliotheque,
     ErreurChargementJSON,
     ErreurSauvegardeJSON,
@@ -11,6 +11,11 @@ from exceptions import (
 
 
 class BibliothequeAvecFichier(Bibliotheque):
+    def __init__(self, nom):
+        super().__init__(nom)
+        self.dossier_donnee = Path(__file__).resolve().parent.parent / "donnée"
+        self.dossier_donnee.mkdir(exist_ok=True)
+
     def _encode_livre(self, livre):
         d = {
             "type": livre.__class__.__name__,
@@ -22,77 +27,56 @@ class BibliothequeAvecFichier(Bibliotheque):
             d["taille_fichier"] = livre.taille_fichier
         return d
 
-    def _to_dict(self):
-        return {"nom": self.nom, "livres": [self._encode_livre(l) for l in self.livres]}
-
     @staticmethod
     def _decode_livre(item):
         typ = item.get("type", "Livre")
         if typ == "LivreNumerique":
             return LivreNumerique(
-                item["titre"],
-                item["auteur"],
-                item["isbn"],
-                item.get("taille_fichier", 0.0),
+                item["titre"], item["auteur"], item["isbn"], item.get("taille_fichier", 0.0)
             )
         return Livre(item["titre"], item["auteur"], item["isbn"])
 
-    @classmethod
-    def _from_dict(cls, data):
-        b = cls(data.get("nom", "SansNom"))
-        for item in data.get("livres", []):
-            b.ajouter_livre(cls._decode_livre(item))
-        return b
-
-    def save_json(self, path="catalogue.json"):
+    def sauvegarder_json(self):
+        path = self.dossier_donnee / "catalogue.json"
         try:
             with open(path, "w", encoding="utf-8") as f:
-                json.dump(self._to_dict(), f, ensure_ascii=False, indent=2)
-        except (OSError, TypeError, ValueError) as e:
-            raise ErreurSauvegardeJSON(
-                "Erreur lors de la sauvegarde JSON '{}': {}".format(path, e)
-            ) from e
+                json.dump({
+                    "nom": self.nom,
+                    "livres": [self._encode_livre(l) for l in self.livres]
+                }, f, ensure_ascii=False, indent=2)
+            print(f"Sauvegarde JSON réussie dans {path}")
+        except Exception as e:
+            raise ErreurSauvegardeJSON(f"Erreur lors de la sauvegarde JSON : {e}") from e
 
     @classmethod
-    def load_json(cls, path="catalogue.json"):
+    def charger_json(cls):
+        dossier_donnee = Path(__file__).resolve().parent.parent / "donnée"
+        path = dossier_donnee / "catalogue.json"
         try:
             with open(path, "r", encoding="utf-8") as f:
                 data = json.load(f)
         except FileNotFoundError as e:
-            raise ErreurFichierBibliotheque(
-                "Fichier JSON introuvable: '{}'".format(path)
-            ) from e
+            raise ErreurFichierBibliotheque(f"Fichier introuvable : {path}") from e
         except json.JSONDecodeError as e:
-            raise ErreurChargementJSON(
-                "JSON invalide dans '{}': {}".format(path, e)
-            ) from e
-        except OSError as e:
-            raise ErreurFichierBibliotheque(
-                "Erreur d'accès au fichier '{}': {}".format(path, e)
-            ) from e
+            raise ErreurChargementJSON(f"Erreur de format JSON : {e}") from e
 
-        if not isinstance(data, dict) or "nom" not in data or "livres" not in data:
-            raise ErreurChargementJSON(
-                "Structure JSON invalide: champs 'nom' et 'livres' requis"
-            )
-        if not isinstance(data["livres"], list):
-            raise ErreurChargementJSON("'livres' doit être une liste")
+        biblio = cls(data.get("nom", "SansNom"))
+        for item in data.get("livres", []):
+            biblio.ajouter_livre(cls._decode_livre(item))
+        return biblio
 
-        return cls._from_dict(data)
-
-    def export_csv(self, path="catalogue.csv"):
+    def exporter_csv(self):
+        path = self.dossier_donnee / "catalogue.csv"
         try:
             with open(path, "w", newline="", encoding="utf-8") as f:
                 writer = csv.DictWriter(
                     f, fieldnames=["type", "titre", "auteur", "isbn", "taille_fichier"]
                 )
                 writer.writeheader()
-                for l in self.livres:
-                    row = self._encode_livre(l)
-                    if "taille_fichier" not in row:
-                        row["taille_fichier"] = ""
+                for livre in self.livres:
+                    row = self._encode_livre(livre)
+                    row.setdefault("taille_fichier", "")
                     writer.writerow(row)
+            print(f"📤 Export CSV réussi dans {path}")
         except OSError as e:
-            raise ErreurExportCSV(
-                "Erreur lors de l'export CSV '{}': {}".format(path, e)
-            ) from e
+            raise ErreurExportCSV(f"Erreur lors de l'export CSV : {e}") from e

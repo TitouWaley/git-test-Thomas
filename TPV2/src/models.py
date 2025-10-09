@@ -1,25 +1,26 @@
 class Livre:
+
     def __init__(self, titre, auteur, isbn):
         self.titre = titre
         self.auteur = auteur
         self.isbn = isbn
 
     def __str__(self):
-        return "'{}' écrit par {} (ISBN: {})".format(self.titre, self.auteur, self.isbn)
+        return f"📘 {self.titre} — {self.auteur} (ISBN: {self.isbn})"
 
 
 class LivreNumerique(Livre):
+
     def __init__(self, titre, auteur, isbn, taille_fichier):
         super().__init__(titre, auteur, isbn)
         self.taille_fichier = taille_fichier
 
     def __str__(self):
-        return "'{}' écrit par {} (ISBN: {}, fichier : {} Mo)".format(
-            self.titre, self.auteur, self.isbn, self.taille_fichier
-        )
+        return f"💻 {self.titre} — {self.auteur} (ISBN: {self.isbn}, {self.taille_fichier} Mo)"
 
 
 class Bibliotheque:
+
     def __init__(self, nom):
         self.nom = nom
         self.livres = []
@@ -31,12 +32,13 @@ class Bibliotheque:
         self.livres = [livre for livre in self.livres if livre.isbn != isbn]
 
     def rechercher_par_titre(self, titre):
-        return [livre for livre in self.livres if titre.lower() in livre.titre.lower()]
+        return [l for l in self.livres if titre.lower() in l.titre.lower()]
 
     def rechercher_par_auteur(self, auteur):
-        return [
-            livre for livre in self.livres if auteur.lower() in livre.auteur.lower()
-        ]
+        return [l for l in self.livres if auteur.lower() in l.auteur.lower()]
 
     def __str__(self):
-        return "Bibliothèque '{}' avec {} livre(s).".format(self.nom, len(self.livres))
+        if not self.livres:
+            return f"📚 Bibliothèque '{self.nom}' — aucun livre"
+        return f"📚 Bibliothèque '{self.nom}' contient {len(self.livres)} livre(s):\n" + \
+               "\n".join(f" - {livre}" for livre in self.livres)

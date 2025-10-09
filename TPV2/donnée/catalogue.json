@@ -1,36 +1,36 @@
 {
-  "nom": "Municipale",
+  "nom": "Bibliothèque Municipale",
   "livres": [
     {
       "type": "Livre",
-      "titre": "Le problème à 3 corps",
-      "auteur": "Liu Cixin",
-      "isbn": "978-0765377067"
+      "titre": "Tron",
+      "auteur": "Charles Xavier",
+      "isbn": "978-0560139876"
     },
     {
       "type": "LivreNumerique",
-      "titre": "1984",
-      "auteur": "George Orwell",
-      "isbn": "978-0451524935",
+      "titre": "1845",
+      "auteur": "Maxime Kiff",
+      "isbn": "788-0451524935",
       "taille_fichier": 2.5
     },
     {
       "type": "Livre",
-      "titre": "Harry potter",
-      "auteur": "Jk Rowling",
-      "isbn": "978-156013987"
+      "titre": "Harry Potter",
+      "auteur": "J.K. Rowling",
+      "isbn": "788-156013987"
     },
     {
       "type": "Livre",
-      "titre": "jsp",
-      "auteur": "brother",
-      "isbn": "978-015601987"
+      "titre": "B1B",
+      "auteur": "Sup de Vinci",
+      "isbn": "788-015601987"
     },
     {
       "type": "Livre",
-      "titre": "monte cristo",
-      "auteur": "je sais pas",
-      "isbn": "978-056013987"
+      "titre": "Cours de Python",
+      "auteur": "Colin",
+      "isbn": "788-056013987"
     }
   ]
 }
