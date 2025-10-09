@@ -1,36 +1,11 @@
 {
-  "nom": "Bibliothèque Municipale",
+  "nom": "Test",
   "livres": [
     {
       "type": "Livre",
-      "titre": "Tron",
-      "auteur": "Charles Xavier",
-      "isbn": "978-0560139876"
-    },
-    {
-      "type": "LivreNumerique",
-      "titre": "1845",
-      "auteur": "Maxime Kiff",
-      "isbn": "788-0451524935",
-      "taille_fichier": 2.5
-    },
-    {
-      "type": "Livre",
-      "titre": "Harry Potter",
-      "auteur": "J.K. Rowling",
-      "isbn": "788-156013987"
-    },
-    {
-      "type": "Livre",
-      "titre": "B1B",
-      "auteur": "Sup de Vinci",
-      "isbn": "788-015601987"
-    },
-    {
-      "type": "Livre",
-      "titre": "Cours de Python",
-      "auteur": "Colin",
-      "isbn": "788-056013987"
+      "titre": "Titre",
+      "auteur": "Auteur",
+      "isbn": "123"
     }
   ]
 }
